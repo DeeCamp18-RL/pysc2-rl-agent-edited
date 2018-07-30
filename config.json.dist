@@ -1,0 +1,7 @@
+{
+  "feats": {
+  	"screen": ["visibility_map"],
+    "minimap": ["visibility_map", "camera"],
+    "non_spatial": ["player", "available_actions"]
+  }
+}
