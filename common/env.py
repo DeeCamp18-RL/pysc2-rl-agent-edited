@@ -22,23 +22,27 @@ def make_env(sz=32, **params):
 def worker(remote, env_fn_wrapper):
     env = env_fn_wrapper.x()
     while True:
-        cmd, data = remote.recv()
-        if cmd == 'spec':
-            remote.send((env.observation_spec(), env.action_spec()))
-        elif cmd == 'step':
-            obs = env.step([data])
-            remote.send(obs[0])
-        elif cmd == 'reset':
+        try:
+            cmd, data = remote.recv()
+            if cmd == 'spec':
+                remote.send((env.observation_spec(), env.action_spec()))
+            elif cmd == 'step':
+                obs = env.step([data])
+                remote.send(obs[0])
+            elif cmd == 'reset':
+                obs = env.reset()
+                remote.send(obs[0])
+            elif cmd == 'close':
+                remote.close()
+                break
+            elif cmd == 'save_replay':
+                env.save_replay(data)
+            else:
+                raise NotImplementedError
+        except Exception as e:
+            print(e)
             obs = env.reset()
             remote.send(obs[0])
-        elif cmd == 'close':
-            remote.close()
-            break
-        elif cmd == 'save_replay':
-            env.save_replay(data)
-        else:
-            raise NotImplementedError
-
 
 class CloudpickleWrapper(object):
     def __init__(self, x):
