@@ -1,7 +1,5 @@
 {
   "feats": {
-    "screen": ["visibility_map", "player_relative", "unit_type", "selected", "unit_hit_points_ratio", "unit_density"],
-    "minimap": ["visibility_map", "camera", "player_relative", "selected"],
     "non_spatial": ["player", "available_actions"]
   }
 }
