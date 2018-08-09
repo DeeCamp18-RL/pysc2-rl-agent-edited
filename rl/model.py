@@ -62,5 +62,10 @@ def broadcast(tensor, sz):
 
 
 def mask_probs(probs, mask):
-    masked = probs * mask
+    # masked = probs * mask
+    masked = tf.cond( 
+        tf.less(tf.reduce_sum(probs * mask), 1e-7), 
+        lambda: tf.ones(tf.shape(probs)) * mask,
+        lambda: probs * mask)
+
     return masked / tf.clip_by_value(tf.reduce_sum(masked, axis=1, keepdims=True), 1e-12, 1.0)
