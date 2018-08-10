@@ -56,16 +56,14 @@ def non_spatial_block(sz, dims, idx):
 
 # based on https://github.com/simonmeister/pysc2-rl-agents/blob/master/rl/networks/fully_conv.py#L91-L96
 def broadcast(tensor, sz):
-    temp = tf.tile(tf.expand_dims(tf.expand_dims(tensor, 2), 3), [1, 1, sz, sz])
-    
-    return tf.transpose(temp, [0, 2, 3, 1]) # NCHW -> NHWC
+    return tf.tile(tf.expand_dims(tf.expand_dims(tensor, 1), 1), [1,  sz, sz, 1])
 
 
 def mask_probs(probs, mask):
     # masked = probs * mask
-    masked = tf.cond( 
-        tf.less(tf.reduce_sum(probs * mask), 1e-7), 
-        lambda: tf.ones(tf.shape(probs)) * mask,
-        lambda: probs * mask)
-
+    masked = probs * mask
+    correction = tf.cast(
+        tf.reduce_sum(masked, axis=-1, keepdims=True) < 1e-3, dtype=tf.float32
+    ) * (1.0 / (tf.reduce_sum(mask, axis=-1, keepdims=True) + 1e-12)) * mask
+    masked += correction
     return masked / tf.clip_by_value(tf.reduce_sum(masked, axis=1, keepdims=True), 1e-12, 1.0)
