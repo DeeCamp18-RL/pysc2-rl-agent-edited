@@ -7,7 +7,7 @@ from common import flatten_lists
 class Runner:
     def __init__(self, envs, agent, n_steps=8):
         self.state = self.logs = None
-        self.ep_rews = 0
+        self.r = 0
         self.agent, self.envs, self.n_steps = agent, envs, n_steps
 
     def run(self, num_updates=1, train=True):
