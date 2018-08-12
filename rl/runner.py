@@ -16,6 +16,7 @@ class Runner:
             for i in range(num_updates):
                 self.logs['updates'] += 1
                 rollout = self.collect_rollout()
+                print(rollout)
                 if train:
                     self.agent.train(i, *rollout)
         except Exception as e:
@@ -58,8 +59,6 @@ class Runner:
         frames = self.envs.num_envs * self.n_steps * self.logs['updates']
 
         self.ep_rews = np.mean(self.logs['ep_rew'])
-        if self.ep_rews is None:
-            self.ep_rews = 0
         logger.logkv('fps', int(frames / elapsed_time))
         logger.logkv('elapsed_time', int(elapsed_time))
         logger.logkv('n_eps', self.logs['eps'])
