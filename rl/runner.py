@@ -18,7 +18,8 @@ class Runner:
                 rollout = self.collect_rollout()
                 if train:
                     self.agent.train(i, *rollout)
-        except KeyboardInterrupt:
+        except Exception as e:
+            print(e)
             pass
         finally:
             elapsed_time = time.time() - self.logs['start_time']
