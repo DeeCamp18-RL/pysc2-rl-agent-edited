@@ -29,7 +29,7 @@ if __name__ == '__main__':
     parser.add_argument("--test", type=bool, nargs='?', const=True, default=False)
     parser.add_argument("--restore", type=bool, nargs='?', const=True, default=False)
     parser.add_argument('--save_replay', type=bool, nargs='?', const=True, default=False)
-    parser.add_argument('--save_best_only', type=bool, nargs='?', default=True)
+    parser.add_argument('--save_best_only', type=bool, default=True)
 
     args = parser.parse_args()
 
