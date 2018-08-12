@@ -4,9 +4,10 @@ from tensorflow.contrib import layers
 
 
 class A2CAgent:
-    def __init__(self, sess, model_fn, config, restore=False, discount=0.99, lr=1e-4, vf_coef=0.25, ent_coef=1e-3, clip_grads=1.):
+    def __init__(self, sess, model_fn, config, restore=False, discount=0.99, lr=1e-4, vf_coef=0.25, ent_coef=1e-3, clip_grads=1., save_best_only=True):
         self.sess, self.config, self.discount = sess, config, discount
         self.vf_coef, self.ent_coef = vf_coef, ent_coef
+        self.save_best_only = save_best_only
 
         (self.policy, self.value), self.inputs = model_fn(config)
         self.action = [sample(p) for p in self.policy]
@@ -27,9 +28,13 @@ class A2CAgent:
         self.summary_writer.add_session_log(tf.SessionLog(status=tf.SessionLog.START), sess.run(self.step))
 
     # TODO: get rid of the step param; gracefully restore for console logs as well
-    def train(self, step, states, actions, rewards, dones, last_value, ep_rews):
-        if step % 500 == 0:
-            self.saver.save(self.sess, 'weights/%s/a2c' % self.config.full_id(), global_step=self.step)
+    def train(self, step, states, actions, rewards, dones, last_value, ep_rews, ep_best_rews):
+        if self.save_best_only:
+            if ep_best_rews >= ep_rews:
+                self.saver.save(self.sess, 'weights/%s/a2c' % self.config.full_id(), global_step=self.step)
+        else:
+            if step % 500 == 0:
+                self.saver.save(self.sess, 'weights/%s/a2c' % self.config.full_id(), global_step=self.step)
 
         returns = self._compute_returns(rewards, dones, last_value)
 

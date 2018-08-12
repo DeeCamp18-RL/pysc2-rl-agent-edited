@@ -38,7 +38,7 @@ class Runner:
 
         last_value = self.agent.get_value(self.state)
 
-        return flatten_lists(states), flatten_lists(actions), rewards, dones, last_value, self.ep_rews
+        return flatten_lists(states), flatten_lists(actions), rewards, dones, last_value, self.ep_rews, self.logs['rew_best']
 
     def reset(self):
         self.state, *_ = self.envs.reset()

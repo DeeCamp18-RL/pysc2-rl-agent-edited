@@ -29,6 +29,7 @@ if __name__ == '__main__':
     parser.add_argument("--test", type=bool, nargs='?', const=True, default=False)
     parser.add_argument("--restore", type=bool, nargs='?', const=True, default=False)
     parser.add_argument('--save_replay', type=bool, nargs='?', const=True, default=False)
+    parser.add_argument('--save_best_only', type=bool, nargs='?', const=True, default=True)
 
     args = parser.parse_args()
 
@@ -45,7 +46,7 @@ if __name__ == '__main__':
         config.save(cfg_path)
 
     envs = EnvWrapper(make_envs(args), config)
-    agent = A2CAgent(sess, fully_conv, config, args.restore, args.discount, args.lr, args.vf_coef, args.ent_coef, args.clip_grads)
+    agent = A2CAgent(sess, fully_conv, config, args.restore, args.discount, args.lr, args.vf_coef, args.ent_coef, args.clip_grads, args.save_best_only)
 
     runner = Runner(envs, agent, args.steps)
     runner.run(args.updates, not args.test)
