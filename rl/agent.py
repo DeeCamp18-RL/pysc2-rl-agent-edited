@@ -29,8 +29,6 @@ class A2CAgent:
 
     # TODO: get rid of the step param; gracefully restore for console logs as well
     def train(self, step, states, actions, rewards, dones, last_value, ep_rews, ep_best_rews):
-        print(ep_best_rews)
-        print(ep_rews)
         if self.save_best_only:
             if ep_best_rews >= ep_rews:
                 self.saver.save(self.sess, 'weights/%s/a2c' % self.config.full_id(), global_step=self.step)
