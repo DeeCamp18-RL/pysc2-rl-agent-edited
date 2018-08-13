@@ -4,12 +4,12 @@ from tensorflow.contrib import layers
 
 
 class A2CAgent:
-    def __init__(self, sess, model_fn, config, restore=False, discount=0.99, lr=1e-4, vf_coef=0.25, ent_coef=1e-3, clip_grads=1., save_best_only=True):
+    def __init__(self, sess, model_fn, config, restore=False, discount=0.99, lr=1e-4, vf_coef=0.25, ent_coef=1e-3, clip_grads=1., save_best_only=True, train=True):
         self.sess, self.config, self.discount = sess, config, discount
         self.vf_coef, self.ent_coef = vf_coef, ent_coef
         self.save_best_only = save_best_only
 
-        (self.policy, self.value), self.inputs = model_fn(config)
+        (self.policy, self.value), self.inputs = model_fn(config, train)
         self.action = [sample(p) for p in self.policy]
         loss_fn, self.loss_inputs = self._loss_func()
 

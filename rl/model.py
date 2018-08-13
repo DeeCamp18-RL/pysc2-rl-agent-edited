@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.contrib import layers
 
 
-def fully_conv(config):
+def fully_conv(config, train):
     screen, screen_input = cnn_block(config.sz, config.screen_dims(), config.embed_dim_fn)
     minimap, minimap_input = cnn_block(config.sz, config.minimap_dims(), config.embed_dim_fn)
     non_spatial, non_spatial_inputs = non_spatial_block(config.sz, config.non_spatial_dims(), config.ns_idx)
@@ -20,7 +20,7 @@ def fully_conv(config):
             policy.append(tf.nn.softmax(layers.flatten(logits)))
         else:
             policy.append(layers.fully_connected(fc1, num_outputs=dim, activation_fn=tf.nn.softmax))
-    policy[0] = mask_probs(policy[0], non_spatial_inputs[config.ns_idx['available_actions']])
+    policy[0] = mask_probs(policy[0], non_spatial_inputs[config.ns_idx['available_actions']], train)
 
     return [policy, value], [screen_input, minimap_input] + non_spatial_inputs
 
@@ -59,11 +59,13 @@ def broadcast(tensor, sz):
     return tf.tile(tf.expand_dims(tf.expand_dims(tensor, 1), 1), [1,  sz, sz, 1])
 
 
-def mask_probs(probs, mask):
+def mask_probs(probs, mask, train):
     # masked = probs * mask
     masked = probs * mask
-    correction = tf.cast(
-        tf.reduce_sum(masked, axis=-1, keepdims=True) < 1e-3, dtype=tf.float32
-    ) * (1.0 / (tf.reduce_sum(mask, axis=-1, keepdims=True) + 1e-12)) * mask
-    masked += correction
+    if train:
+        correction = tf.cast(
+            tf.reduce_sum(masked, axis=-1, keepdims=True) < 1e-3, dtype=tf.float32
+        ) * (1.0 / (tf.reduce_sum(mask, axis=-1, keepdims=True) + 1e-12)) * mask
+        masked += correction
+
     return masked / tf.clip_by_value(tf.reduce_sum(masked, axis=1, keepdims=True), 1e-12, 1.0)

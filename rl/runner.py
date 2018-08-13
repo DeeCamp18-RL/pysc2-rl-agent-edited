@@ -5,19 +5,20 @@ from common import flatten_lists
 
 
 class Runner:
-    def __init__(self, envs, agent, n_steps=8):
+    def __init__(self, envs, agent, train=True, n_steps=8):
         self.state = self.logs = None
         self.ep_rews = 0
+        self.train = train
         self.agent, self.envs, self.n_steps = agent, envs, n_steps
 
-    def run(self, num_updates=1, train=True):
+    def run(self, num_updates=1):
         # based on https://github.com/deepmind/pysc2/blob/master/pysc2/env/run_loop.py
         self.reset()
         try:
             for i in range(num_updates):
                 self.logs['updates'] += 1
                 rollout = self.collect_rollout()
-                if train:
+                if self.train:
                     self.agent.train(i, *rollout)
         except Exception as e:
             print(e)
