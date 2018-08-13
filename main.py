@@ -11,7 +11,7 @@ from rl import Runner, EnvWrapper
 
 c = tf.ConfigProto()  
 c.gpu_options.allow_growth=True  
-sess = tf.Session(config=config)
+sess = tf.Session(config=c)
 
 if __name__ == '__main__':
     # flags.FLAGS(['main.py'])
