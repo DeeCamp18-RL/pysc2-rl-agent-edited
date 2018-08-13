@@ -30,7 +30,6 @@ if __name__ == '__main__':
     parser.add_argument("--restore", type=bool, nargs='?', const=True, default=False)
     parser.add_argument('--save_replay', type=bool, nargs='?', const=True, default=False)
     parser.add_argument('--save_best_only', type=bool, nargs='?', const=True, default=False)
-
     args = parser.parse_args()
 
     os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
