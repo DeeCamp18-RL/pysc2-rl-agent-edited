@@ -9,6 +9,10 @@ from rl.agent import A2CAgent
 from rl.model import fully_conv
 from rl import Runner, EnvWrapper
 
+c = tf.ConfigProto()  
+c.gpu_options.allow_growth=True  
+sess = tf.Session(config=config)
+
 if __name__ == '__main__':
     # flags.FLAGS(['main.py'])
     parser = argparse.ArgumentParser()
