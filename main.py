@@ -33,10 +33,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
-    tf.reset_default_graph()
-    c = tf.ConfigProto()  
-    c.gpu_options.allow_growth=True  
-    sess = tf.Session(config=c)
+    tf.reset_default_graph() 
+    sess = tf.Session()
     # config = Config(args.sz, args.map, lambda _: 1)
     config = Config(args.sz, args.map, args.run_id)
     os.makedirs('weights/' + config.full_id(), exist_ok=True)
