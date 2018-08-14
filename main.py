@@ -9,10 +9,6 @@ from rl.agent import A2CAgent
 from rl.model import fully_conv
 from rl import Runner, EnvWrapper
 
-c = tf.ConfigProto()  
-c.gpu_options.allow_growth=True  
-sess = tf.Session(config=c)
-
 if __name__ == '__main__':
     # flags.FLAGS(['main.py'])
     parser = argparse.ArgumentParser()
@@ -38,8 +34,9 @@ if __name__ == '__main__':
 
     os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
     tf.reset_default_graph()
-    sess = tf.Session()
-
+    c = tf.ConfigProto()  
+    c.gpu_options.allow_growth=True  
+    sess = tf.Session(config=c)
     # config = Config(args.sz, args.map, lambda _: 1)
     config = Config(args.sz, args.map, args.run_id)
     os.makedirs('weights/' + config.full_id(), exist_ok=True)
