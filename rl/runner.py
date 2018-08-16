@@ -54,8 +54,10 @@ class Runner:
         if sum(self.logs['dones']) < self.envs.num_envs:
             return
         self.logs['eps'] += self.envs.num_envs
-        self.logs['rew_best'] = max(self.logs['rew_best'], np.mean(self.logs['ep_rew']))
+        if self.agent.save_best_only and (self.logs['rew_best'] < np.mean(self.logs['ep_rew']) ):
+            self.agent.save_checkpoint()
 
+        self.logs['rew_best'] = max(self.logs['rew_best'], np.mean(self.logs['ep_rew']))
         elapsed_time = time.time() - self.logs['start_time']
         frames = self.envs.num_envs * self.n_steps * self.logs['updates']
 
