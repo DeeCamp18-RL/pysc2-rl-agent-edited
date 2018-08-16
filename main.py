@@ -49,7 +49,7 @@ if __name__ == '__main__':
     envs = EnvWrapper(make_envs(args), config)
     agent = A2CAgent(sess, fully_conv, config, args.restore, args.discount, args.lr, args.vf_coef, args.ent_coef, args.clip_grads, args.save_best_only, not args.test)
 
-    runner = Runner(envs, agent, not args.test, args.steps, args.skip_steps)
+    runner = Runner(envs, agent, not args.test, args.steps)
     runner.run(args.updates)
 
     if args.save_replay:

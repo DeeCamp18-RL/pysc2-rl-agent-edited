@@ -5,11 +5,11 @@ from common import flatten_lists
 
 
 class Runner:
-    def __init__(self, envs, agent, train=True, n_steps=8, skip_steps=0):
+    def __init__(self, envs, agent, train=True, n_steps=8):
         self.state = self.logs = None
         self.ep_rews = 0
         self.train = train
-        self.agent, self.envs, self.n_steps, self.skip_steps = agent, envs, n_steps, skip_steps
+        self.agent, self.envs, self.n_steps = agent, envs, n_steps
 
     def run(self, num_updates=1):
         # based on https://github.com/deepmind/pysc2/blob/master/pysc2/env/run_loop.py
@@ -36,10 +36,6 @@ class Runner:
             action, values[step] = self.agent.act(self.state)
             states[step], actions[step] = self.state, action
             self.state, rewards[step], dones[step] = self.envs.step(action)
-
-            if self.skip_steps:
-                for skip in skip_steps:
-                    _ = self.envs.step([[0]*self.n_steps,[None]])
 
             self.log(rewards[step], dones[step])
 
