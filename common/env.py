@@ -3,7 +3,7 @@ from multiprocessing import Process, Pipe
 
 
 def make_envs(args):
-    env_args = dict(map_name=args.map, step_mul=8, game_steps_per_episode=0)
+    env_args = dict(map_name=args.map, step_mul=8*(args.skip_steps+1), game_steps_per_episode=0)
     return EnvPool([make_env(args.sz, **dict(env_args, visualize=i < args.render)) for i in range(args.envs)])
 
 
